@@ -1,7 +1,6 @@
 import 'dart:io';
 
-RegExp nrReg = RegExp(r'(\d+)');
-RegExp mapReg = RegExp(r'(\w+)\-to\-(\w+)');
+import 'utils.dart';
 
 void main() {
   final lines = new File('input.txt').readAsLinesSync();
@@ -45,10 +44,6 @@ void partOne(List<String> lines) {
   }
 
   print(sum);
-}
-
-List<int> getNumbersFromString(String s) {
-  return nrReg.allMatches(s).map((e) => int.parse(e[0].toString())).toList();
 }
 
 int concatNumbersFromLine(String line) {

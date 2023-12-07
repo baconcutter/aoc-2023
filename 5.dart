@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'utils.dart';
+
 RegExp nrReg = RegExp(r'(\d+)');
 RegExp mapReg = RegExp(r'(\w+)\-to\-(\w+)');
 
@@ -141,9 +143,6 @@ Map<String, Map<(int, int), (int, int)>> parse(Iterable<String> lines) {
   return mapOfMaps;
 }
 
-List<int> getNumbersFromString(String s) {
-  return nrReg.allMatches(s).map((e) => int.parse(e[0].toString())).toList();
-}
 
 // void parseSeeds(String s, Map<String, Map<dynamic, dynamic>> map) {
 //   var numbersFromString = getNumbersFromString(s);
