@@ -16,3 +16,10 @@ bool isAdjacent(Point a, Point b) =>
     (a.x - b.x).abs() <= 1 && (a.y - b.y).abs() <= 1;
 bool sameRow(Point a, Point b) => a.y == b.y;
 bool sameColumn(Point a, Point b) => a.x == b.x;
+
+int leastCommonMultiple(int a, int b) {
+  if ((a == 0) || (b == 0)) {
+    return 0;
+  }
+  return ((a ~/ a.gcd(b)) * b).abs();
+}
