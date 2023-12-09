@@ -1,6 +1,6 @@
 import 'dart:math';
 
-RegExp getNumbersRegExp = RegExp(r'(\d+)');
+RegExp getNumbersRegExp = RegExp(r'(-?\d+)');
 RegExp hasRepeatsRegExp = RegExp(r'(.).*\1');
 RegExp hasRepeatedWordsRegExp = RegExp(r'(\w+).*\1');
 
@@ -22,4 +22,12 @@ int leastCommonMultiple(int a, int b) {
     return 0;
   }
   return ((a ~/ a.gcd(b)) * b).abs();
+}
+
+Iterable<List<T>> zip<T>(Iterable<Iterable<T>> iterables) sync* {
+  if (iterables.isEmpty) return;
+  final iterators = iterables.map((e) => e.iterator).toList(growable: false);
+  while (iterators.every((e) => e.moveNext())) {
+    yield iterators.map((e) => e.current).toList(growable: false);
+  }
 }
