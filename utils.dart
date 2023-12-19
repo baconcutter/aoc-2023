@@ -24,6 +24,10 @@ int leastCommonMultiple(int a, int b) {
   return ((a ~/ a.gcd(b)) * b).abs();
 }
 
+String replaceCharAt(String oldString, int index, String newChar) {
+  return oldString.substring(0, index) + newChar + oldString.substring(index + 1);
+}
+
 Iterable<List<T>> zip<T>(Iterable<Iterable<T>> iterables) sync* {
   if (iterables.isEmpty) return;
   final iterators = iterables.map((e) => e.iterator).toList(growable: false);
