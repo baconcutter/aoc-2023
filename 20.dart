@@ -5,27 +5,40 @@ abstract class Module {
   Iterable<Command> process(String from, bool high);
 
   Iterable<String> getTo();
+
+  void addInput(String name);
 }
 
 class FlipFlop extends Module {
   bool on = false;
   String name;
-  List<String> to;
+  List<String> outputs;
+  Set<String> inputs = Set();
 
-  FlipFlop(this.name, this.to);
+  FlipFlop(this.name, this.outputs);
 
   @override
   Iterable<Command> process(String from, bool high) {
     if (!high) {
       on = !on;
-      return to.map((e) => new Command(name, e, on));
+      return outputs.map((e) => new Command(name, e, on));
     }
     return List.empty();
   }
 
   @override
   Iterable<String> getTo() {
-    return to;
+    return outputs;
+  }
+
+  @override
+  void addInput(String name) {
+    inputs.add(name);
+  }
+
+  @override
+  String toString() {
+    return '$name inputs ${inputs}, outputs: ${outputs}';
   }
 }
 
@@ -45,6 +58,7 @@ class Conjuction extends Module {
     return to.map((e) => new Command(name, e, highOutput));
   }
 
+  @override
   void addInput(String name) {
     input.putIfAbsent(name, () => false);
   }
@@ -56,7 +70,7 @@ class Conjuction extends Module {
 
   @override
   String toString() {
-    return '$name ${input}';
+    return '$name inputs ${input}, outputs: ${to}';
   }
 }
 
@@ -74,6 +88,11 @@ class Broadcaster extends Module {
   Iterable<String> getTo() {
     return to;
   }
+
+  @override
+  void addInput(String name) {
+    // TODO: implement addInput
+  }
 }
 
 class Command {
@@ -81,6 +100,11 @@ class Command {
   String from;
   String to;
   Command(this.from, this.to, this.high);
+
+  @override
+  String toString() {
+    return '${from} -${high ? 'high' : 'low'} -> ${to}';
+  }
 }
 
 void main() {
@@ -109,25 +133,34 @@ void main() {
   });
 
   // add inputs to conjuctions.
-  m.keys.where((key) => m[key] is Conjuction).forEach((k) {
-    Conjuction c = m[k] as Conjuction;
-    m.keys.where((key) => m[key]!.getTo().contains(k)).forEach((k) {
-      c.addInput(k);
+  m.keys.forEach((mk) {
+    m.keys.where((key) => m[key]!.getTo().contains(mk)).forEach((k) {
+      m[mk]!.addInput(k);
     });
   });
 
-  int requiredButtonPushes = 1000;
+  m.keys.forEach((k) {
+    print(m[k].toString());
+  });
+
+  pt1(m);
+}
+
+void pt2(Map<String, Module> m, String key) {}
+
+void pt1(Map<String, Module> m) {
+  int requiredButtonPushes = 4;
   int sumLow = 0;
   int sumHigh = 0;
+  print('---PT1----');
   while (requiredButtonPushes > 0) {
-    
     Queue<Command> commands = Queue();
     commands.addAll(m['broadcaster']!.process('button', false));
     sumLow++;
     requiredButtonPushes--;
     while (commands.isNotEmpty) {
       Command c = commands.removeFirst();
-      // print('${c.from} -${c.high ? 'high' : 'low'} -> ${c.to}');
+      print(c.toString());
       if (c.high) {
         sumHigh++;
       } else {
@@ -137,9 +170,8 @@ void main() {
       if (m[c.to] != null) {
         commands.addAll(m[c.to]!.process(c.from, c.high));
       }
-
     }
-    // print('------');
+    print('-------');
   }
 
   print(sumLow * sumHigh);
